@@ -64,30 +64,14 @@
   },
   ];
 
-console.log(galleryItems)
-  // получение доступов 
+// получение доступов
 const listGallery = document.querySelector('.js-gallery')
 const modal = document.querySelector('.js-lightbox')
 const closeButton = document.querySelector('.lightbox__button')
 const galleryImage = document.querySelector('.gallery__image')
 const modalImage = document.querySelector('.lightbox__image')
 
-// шаблон разметки
-  const item = `<li class="gallery__item">
-  <a
-    class="gallery__link"
-    href="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-  >
-    <img
-      class="gallery__image"
-      src="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546__340.jpg"
-      data-source="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-      alt="Tulips"
-    />
-  </a>
-</li>`
 // функция разметки 
-
 function createItems(array) {
  return array.map((elem) => {
     const {preview, original, description } = elem
@@ -108,11 +92,11 @@ function createItems(array) {
 }
 // вызов createItems
 const markup = createItems(galleryItems)
-// console.log(markup)
+
 // встраивание разметки
 listGallery.insertAdjacentHTML("afterbegin", markup)
 
-// встраивание в модальное окно
+// встраивание елемента в модальное окно
 function insertElementToModal(element) {
   modal.insertAdjacentElement('afterbegin', element)
 }
@@ -128,7 +112,8 @@ listGallery.addEventListener('click', (e) => {
   // console.dir(e.target.dataset.source) - над этой строкой просидел 4 часа... 
   if (condition) {
     openModalImg(modal)
-  modalImage.src = e.target.dataset.source
+    modalImage.src = e.target.dataset.source
+    
   }
 })
 
@@ -138,6 +123,7 @@ function closeModalImg(element) {
   modalImage.src = ''
 }
 
+// слушатель бекдропа
 modal.addEventListener('click', closeModalByClick)
 function closeModalByClick(e) {
   // const condition = e.target.classList.contains('lightbox__overlay')
@@ -145,6 +131,8 @@ function closeModalByClick(e) {
     closeModalImg(modal)
   }
 }
+
+// слушатель кнопки Esc
 window.addEventListener('keydown', closeModalByKeydown)
 function closeModalByKeydown(e) {
   // const condition = e.code === 'Escape'
@@ -152,12 +140,16 @@ function closeModalByKeydown(e) {
    closeModalImg(modal)
   }
 }
-modal.addEventListener('click', () => {
- closeModalImg(modal)
+
+// слушатель Кнопки
+modal.addEventListener('click', (e) => {
+  if (e.target.dataset.action === 'close-lightbox') {  
+    closeModalImg(modal)
+  }
 })
 
 // зачистка слушателя
-if (!modal.classList.contains('is-open')) {
+if (modal.classList.contains('.is-open')) {
   // window.removeEventListener('keydown', closeModalByKeydown) 
   modal.removeEventListener('click', closeModalByClick)
 }

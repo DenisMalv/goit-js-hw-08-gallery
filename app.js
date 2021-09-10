@@ -71,9 +71,6 @@ const modal = document.querySelector('.js-lightbox')
 const closeButton = document.querySelector('.lightbox__button')
 const galleryImage = document.querySelector('.gallery__image')
 const modalImage = document.querySelector('.lightbox__image')
-console.log(listGallery)
-console.log(modal)
-console.log(closeButton)
 
 // шаблон разметки
   const item = `<li class="gallery__item">
@@ -89,14 +86,11 @@ console.log(closeButton)
     />
   </a>
 </li>`
-// console.log(item)
 // функция разметки 
 
 function createItems(array) {
-  // console.log(array)
  return array.map((elem) => {
     const {preview, original, description } = elem
-    // console.log(preview, original, description )
     return `<li class="gallery__item">
   <a
     class="gallery__link"
@@ -111,7 +105,6 @@ function createItems(array) {
   </a>
 </li>`    
   }).join('')
-  // console.log(result.join(""))
 }
 // вызов createItems
 const markup = createItems(galleryItems)
@@ -119,33 +112,10 @@ const markup = createItems(galleryItems)
 // встраивание разметки
 listGallery.insertAdjacentHTML("afterbegin", markup)
 
-// создание наблюдателя.
-/*const options = {
-  root: listGallery,
-  rootMargin: "0px",
-  threshold: 0,
-}
-const observer = new IntersectionObserver(callback, options)
-function callback(entries) {
-  console.log(entries)
-  entries.forEach((entry)=> {
-    console.log(entry)
-    if (entry.isIntersecting) {
-      console.log(entry.target)
-      
-    }
-  })
-}
-const items =[...listGallery.children]
-console.log(items)
-
-items.forEach((item)=> observer.observe(item))
-*/
 // встраивание в модальное окно
 function insertElementToModal(element) {
   modal.insertAdjacentElement('afterbegin', element)
 }
-// console.log(originalImage)
 
 // добавляем открытие модального окна
 function openModalImg(element) {
@@ -155,14 +125,13 @@ function openModalImg(element) {
 listGallery.addEventListener('click', (e) => {
   e.preventDefault()
   const condition = e.target.nodeName === 'IMG'
-  // console.dir(e.target.dataset.source) - над этой строкой просидел 4 часа... слезы.
-  // console.log(condition)
-  // console.log(e)
+  // console.dir(e.target.dataset.source) - над этой строкой просидел 4 часа... 
   if (condition) {
     openModalImg(modal)
   modalImage.src = e.target.dataset.source
   }
 })
+
 // добавляем закрытие модального окна
 function closeModalImg(element) {
   element.classList.remove('is-open')
@@ -189,6 +158,6 @@ modal.addEventListener('click', () => {
 
 // зачистка слушателя
 if (!modal.classList.contains('is-open')) {
-  // window.removeEventListener('keydown', closeModalByKeydown)
+  // window.removeEventListener('keydown', closeModalByKeydown) 
   modal.removeEventListener('click', closeModalByClick)
 }

@@ -96,60 +96,64 @@ const markup = createItems(galleryItems)
 // встраивание разметки
 listGallery.insertAdjacentHTML("afterbegin", markup)
 
-// встраивание елемента в модальное окно
-function insertElementToModal(element) {
-  modal.insertAdjacentElement('afterbegin', element)
-}
-
 // добавляем открытие модального окна
 function openModalImg(element) {
   element.classList.add('is-open')
 }
-
+let currentIndex = 0
 listGallery.addEventListener('click', (e) => {
   e.preventDefault()
   const condition = e.target.nodeName === 'IMG'
-  // console.dir(e.target.dataset.source) - над этой строкой просидел 4 часа... 
+
   if (condition) {
     openModalImg(modal)
     modalImage.src = e.target.dataset.source
-    
+    modalImage.alt = e.target.alt
+    // слушатель кнопки Esc
+    window.addEventListener('keydown', closeModalByKeydown)
+    function closeModalByKeydown(e) {
+    if (e.code === 'Escape') {
+   closeModalImg(modal)
+    }
+    }
+    // переход картинок с помощью стрелок <- ->
+    window.addEventListener('keydown', _.throttle((event) => {
+        console.log(event.code)
+         if (event.code === 'ArrowRight') {
+        currentIndex += 1;
+        if (currentIndex >= galleryItems.length) {
+            currentIndex = 0;
+        }
+    }
+
+    if (event.code === 'ArrowLeft') {
+        currentIndex -= 1;
+        if (currentIndex < 0) {
+            currentIndex = galleryItems.length - 1;
+        }
+    }
+         modalImage.src = galleryItems[currentIndex].original;
+    modalImage.alt = galleryItems[currentIndex].description;
+
+},100))
   }
+  
 })
 
 // добавляем закрытие модального окна
 function closeModalImg(element) {
-  element.classList.remove('is-open')
-  modalImage.src = ''
-}
+  if (element.classList.remove('is-open')) {
+    modalImage.src = ''
+    modalImage.alt = ''
+    modal.removeEventListener('click', closeModalByClick)
+    window.removeEventListener('keydown', closeModalByKeydown)
+  }
+  }
 
 // слушатель бекдропа
 modal.addEventListener('click', closeModalByClick)
 function closeModalByClick(e) {
-  // const condition = e.target.classList.contains('lightbox__overlay')
-  if (e.target.classList.contains('lightbox__overlay')) {
+  if (e.target.classList.contains('lightbox__overlay') || e.target.dataset.action === 'close-lightbox') {
     closeModalImg(modal)
   }
-}
-
-// слушатель кнопки Esc
-window.addEventListener('keydown', closeModalByKeydown)
-function closeModalByKeydown(e) {
-  // const condition = e.code === 'Escape'
-  if (e.code === 'Escape') {
-   closeModalImg(modal)
-  }
-}
-
-// слушатель Кнопки
-modal.addEventListener('click', (e) => {
-  if (e.target.dataset.action === 'close-lightbox') {  
-    closeModalImg(modal)
-  }
-})
-
-// зачистка слушателя
-if (modal.classList.contains('.is-open')) {
-  // window.removeEventListener('keydown', closeModalByKeydown) 
-  modal.removeEventListener('click', closeModalByClick)
 }
